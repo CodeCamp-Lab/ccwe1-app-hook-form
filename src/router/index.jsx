@@ -38,7 +38,7 @@ const router = createBrowserRouter(
       element: <LoginPage />,
     },
   ],
-  { basename: "/ccwe1-mini-product-store-app1/" },
+  { basename: "/ccwe1-app-hook-form/" },
 );
 
 export default router;
