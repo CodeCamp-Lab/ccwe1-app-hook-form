@@ -7,35 +7,38 @@ import Cart from "../pages/Cart";
 import { getProducts, getProductById } from "../api/products";
 import LoginPage from "../pages/LoginPage";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <ProductList />,
-        loader: getProducts
-      },
-      {
-        path: "product/:id",
-        element: <ProductDetail />,
-        loader: getProductById
-      },
-      {
-        path: "cart",
-        element: <Cart />,
-      },
-      {
-        path: "*",
-        element: <ErrorPage />,
-      },
-    ],
-  },
-  {
-    path: "/login",
-    element: <LoginPage />
-  }
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <ProductList />,
+          loader: getProducts,
+        },
+        {
+          path: "product/:id",
+          element: <ProductDetail />,
+          loader: getProductById,
+        },
+        {
+          path: "cart",
+          element: <Cart />,
+        },
+        {
+          path: "*",
+          element: <ErrorPage />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+  ],
+  { basename: "/ccwe1-mini-product-store-app1/" },
+);
 
 export default router;
