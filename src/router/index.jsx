@@ -7,6 +7,9 @@ import Cart from "../pages/Cart";
 import { getProducts, getProductById } from "../api/products";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+import { protectedLoader, adminLoader } from "../loaders/protectedLoader";
+import { publicLoader } from "../loaders/publicLoader";
+import AdminPage from "../pages/AdminPage";
 
 const router = createBrowserRouter(
   [
@@ -27,6 +30,12 @@ const router = createBrowserRouter(
         {
           path: "cart",
           element: <Cart />,
+          loader: protectedLoader,
+        },
+        {
+          path: "admin",
+          element: <AdminPage />,
+          loader: adminLoader,
         },
         {
           path: "*",
@@ -37,11 +46,12 @@ const router = createBrowserRouter(
     {
       path: "/login",
       element: <LoginPage />,
+      loader: publicLoader,
     },
     {
       path: "/register",
-      element: <RegisterPage />
-    }
+      element: <RegisterPage />,
+    },
   ],
   { basename: "/ccwe1-app-hook-form/" },
 );

@@ -2,18 +2,28 @@ import styles from "../styles/LoginPage.module.css";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "../store/useAuthStore";
+import { useNavigate } from "react-router";
+
+// const loginSchema = z.object({
+//   email: z.string().min(1, "กรุณากรอกอีเมล").email("อีเมลไม่ถูกต้อง"),
+//   password: z.string().min(6, "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร"),
+//   confirmPassword: z.string(),
+//   tel: z.string().regex(/^08\d{8}$/,"กรุณากรอกตัวเลข 10 ตัว และขึ้นต้นด้วย 08")
+// }).refine((data) => data.password === data.confirmPassword, {
+//     path:["confirmPassword"],
+//     message: "รหัสผ่านไม่ตรงกัน"
+// });
 
 const loginSchema = z.object({
   email: z.string().min(1, "กรุณากรอกอีเมล").email("อีเมลไม่ถูกต้อง"),
   password: z.string().min(6, "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร"),
-  confirmPassword: z.string(),
-  tel: z.string().regex(/^08\d{8}$/,"กรุณากรอกตัวเลข 10 ตัว และขึ้นต้นด้วย 08")
-}).refine((data) => data.password === data.confirmPassword, {
-    path:["confirmPassword"],
-    message: "รหัสผ่านไม่ตรงกัน"
-});
+})
 
 export default function LoginPage() {
+  const login = useAuthStore((state)=> state.login);
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -23,7 +33,15 @@ export default function LoginPage() {
   });
 
   const onSumit = async (data) => {
-    console.log(data);
+    // console.log(data);
+    try {
+      await login(data.email, data.password);
+      alert("Login Success!");
+      navigate("/");
+
+    } catch {
+      console.log("Login Failed!");
+    }
   };
 
   return (
@@ -55,7 +73,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        <div className={styles.inputGroup}>
+        {/* <div className={styles.inputGroup}>
           <label className={styles.label}>Confirm Password</label>
           <input
             {...register("confirmPassword")}
@@ -77,7 +95,7 @@ export default function LoginPage() {
           {errors.tel && (
             <span className={styles.errorText}>{errors.tel.message}</span>
           )}
-        </div>
+        </div> */}
         <button className={styles.submitButton}>Login</button>
       </form>
     </div>

@@ -3,24 +3,27 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
+import { userRegister } from "../api/auth";
 
-const registerSchema = z.object({
-  fullname: z.string().min(1, "กรุณากรอกชื่อ-สกุล"),
-  username: z
-    .string()
-    .min(3, "ต้องมีมากกว่า 3 ตัวอักษร")
-    .max(12, "ต้องมีน้อยกว่า 12 ตัวอักษร")
-    .regex(
-      /^[a-zA-Z0-9]+$/,
-      "ต้องประกอบด้วยตัวอักษรภาษาอังกฤษหรือตัวเลขเท่านั้น",
-    ),
+const registerSchema = z
+  .object({
+    fullname: z.string().min(1, "กรุณากรอกชื่อ-สกุล"),
+    username: z
+      .string()
+      .min(3, "ต้องมีมากกว่า 3 ตัวอักษร")
+      .max(12, "ต้องมีน้อยกว่า 12 ตัวอักษร")
+      .regex(
+        /^[a-zA-Z0-9]+$/,
+        "ต้องประกอบด้วยตัวอักษรภาษาอังกฤษหรือตัวเลขเท่านั้น",
+      ),
     email: z.string().email("รูปแบบอีเมลไม่ถูกต้อง"),
     password: z.string().min(8, "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"),
-    confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-    path:["confirmPassword"],
-    message: "รหัสผ่านไม่ตรงกัน"
-});
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "รหัสผ่านไม่ตรงกัน",
+  });
 
 export default function RegisterPage() {
   const {
@@ -33,10 +36,12 @@ export default function RegisterPage() {
 
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+    await userRegister(data.email, data.password);
+
     alert("สมัครสมาชิกสำเร็จ!");
-    navigate("/")
+    navigate("/");
   };
 
   return (
@@ -69,7 +74,11 @@ export default function RegisterPage() {
 
         <div className={styles.inputGroup}>
           <label className={styles.label}>รหัสผ่าน</label>
-          <input type="password" {...register("password")} className={styles.input} />
+          <input
+            type="password"
+            {...register("password")}
+            className={styles.input}
+          />
           {errors.password && (
             <span className={styles.errorText}>{errors.password.message}</span>
           )}
@@ -77,9 +86,15 @@ export default function RegisterPage() {
 
         <div className={styles.inputGroup}>
           <label className={styles.label}>ยืนยันรหัสผ่าน</label>
-          <input type="password" {...register("confirmPassword")} className={styles.input} />
+          <input
+            type="password"
+            {...register("confirmPassword")}
+            className={styles.input}
+          />
           {errors.confirmPassword && (
-            <span className={styles.errorText}>{errors.confirmPassword.message}</span>
+            <span className={styles.errorText}>
+              {errors.confirmPassword.message}
+            </span>
           )}
         </div>
 
